@@ -7,16 +7,19 @@
   description: "Description of the post"
   authors:
   - Bosen Ding:
-  - Karen Lu:
+  - Wenjing Kang:
   affiliations:
   - SHAOCONG LIU:
-  - WENJING KANG:
+  - KAREN LU:
 </script>
 
 <dt-article class="centered">
   <h1>Multimodal Compact Bilinear Pooling in VQA</h1>
   <h2>University of California, at Berkeley</h2>
   <dt-byline></dt-byline>
+
+<p>In this blog, we will discuss a re-implementation attempt of MCB VQA in tensorflow. The accuracy we get is about 30 %, which is lower than the 60% from the original paper. Corresponding lessons are discussed in detail in result and lesson sections. 
+  </p>
 
   <h2>Problem Statement and Background</h2>
   <p>In this project, our group focused on the problem of Visual Question Answer <dt-cite key="1"></dt-cite>, the intersection of computer vision and natural language processing. Naturally, we humans associate visual stimuli with symbols defined within our language.  In addition to captioning and assigning each scene with corresponding description, we also use our language to reason with the information presented by the visual stimuli.  To mimic this task, our neural network requires, in addition to image captioning techniques, a direct emphasis on associating the question answering process with the presented visual informations. The completion of this task will open up a new world to the application of artificial intelligence. For example, instead of only asking Alexa ”What is the weather today?”, people will be able to show Alexa an image of Trump and ask ”How do you like his hair?” 
@@ -41,9 +44,9 @@ Another method is proposed in the paper ”Hierarchical Question-Image Co-Attent
 <h2>Approach</h2>
 
 <p>
-  Our approach starts with preprocessing our data using resnet and lstm for the image and textual parts respectively. With MSCOCO VQA dataset, we first performed feature extraction on the images using resnet-152. This part of the preprocessing utilizes pretrained resnet-152 model and stores the last fully-connected layer’s output for each image as the feature of the image. Each image, after this process, is represented by a 2048 x 14 x 14 matrix that will be fed into our model. This part is done using caffe on AWS. <br /> <br />
-For the textual information, we first make dictionaries of all the words appeared in questions and answers. Then, we tokenize each question sentence based on the vocabulary into vector in all of our four models, two of which use Glove for extra textual representation. And we extract feather from a word embedding matrix and then feed the vector into a two-layer LSTM. We limited the maximum number of words in a question as 15. Therefore we used the output of the two-layer LSTM after feeding 15 times as the representation of this question. Each output of LSTM is 1024 size, so the question output size is 2048. When attention is used, we tile the question vector into 2048 x 14 x 14 to match the size of image feature. 
-When Glove is used, we combine the word-embedding vector and the corresponding Glove embedding before feeding into the LSTM network. 
+  Our approach started with preprocessing our data using resnet and lstm for the image and textual parts respectively. With MSCOCO VQA dataset, we first performed feature extraction on the images using resnet-152. This part of the preprocessing utilized pretrained resnet-152 model and stored the last fully-connected layer’s output for each image as the feature of the image. Each image, after this process, is represented by a 2048 x 14 x 14 matrix that will be fed into our model. This part is done using caffe on AWS. <br /> <br />
+For the textual information, we first made dictionaries of all the words appeared in questions and answers. Then, we tokenized each question sentence based on the vocabulary into vector in all of our four models, two of which used Glove for extra textual representation. Then we extracted featury from a word embedding matrix and then feeded the vector into a two-layer LSTM. We limited the maximum number of words in a question as 15. Therefore we used the output of the two-layer LSTM after feeding 15 times as the representation of this question. Each output of LSTM is 1024 size, so the question output size is 2048. When attention is used, we tiled the question vector into 2048 x 14 x 14 to match the size of image feature. 
+When Glove was used, we combined the word-embedding vector and the corresponding Glove embedding before feeding into the LSTM network. 
 </p>
 
 <div class="image">
@@ -52,9 +55,9 @@ When Glove is used, we combine the word-embedding vector and the corresponding G
 
 <p>
 
-Our basic model uses the image and textual(without Glove) input as mentioned above and then feed both features into the multimodal compact bilinear layer and then a fully connected layer for softmax prediction. According to the VQA paper <dt-cite key="2"></dt-cite>, the most frequent 3000 answers are used as a classification problem, which theoretically contain about 85% of correct answer set.
+Our basic model uses the image and textual(without Glove) input as mentioned above and then feeds both features into the multimodal compact bilinear <dt-cite key="5"></dt-cite> layer and then a fully connected layer for softmax prediction. According to the VQA paper <dt-cite key="2"></dt-cite>, the most frequent 3000 answers are used as a classification problem, which theoretically contain about 85% of correct answer set.
 <br /> <br /> 
-The original paper <dt-cite key="2"></dt-cite> did not implement the MCB themselves, so we just used a tensorflow MCB CUDA implementation we found online. 
+The original paper <dt-cite key="2"></dt-cite> did not implement the MCB themselves, so we just used a tensorflow MCB CUDA implementation <dt-cite key="4"></dt-cite> we found online. 
 </p>
 <div class="image">
   <img src="https://raw.githubusercontent.com/shaocongliu/MCB_in_VQA/master/graphs/mcb2.png" height="230" width="700">
@@ -67,29 +70,49 @@ We also implemented the attention as introduced in the paper <dt-cite key="2"></
   <h2>Results</h2>
 <p>
   We train our model on the VQA training split and test on validation split, as the original challenge proposes. We validate our ongoing training model every 1000 iteration on a random selected batch, which consists of 32 image and question pairs, from validation set. Despite our continuous efforts, our results are still disappointingly below our expectation. As we try to reimplement the state-of-the-art method of VQA, our accuracy remains below the expected outcome.  <br /> <br />
-The results for baseline model, baseline mcb with glove, attention mcb, and our final model of attention mcb with glove are shown in the following plots. 
+The results for baseline model, baseline mcb with glove, attention mcb, and our final model of attention mcb with glove are shown in the following plots.  Our training accuracy stuck around 25% while our validation accuracy stuck around 30 %.
 </p>
 
-<div class="image">
-  <img src="https://raw.githubusercontent.com/shaocongliu/MCB_in_VQA/master/graphs/train_average_accuracy.jpg" height="430" width="650">
- </div>
-
-<div class="image">
-  <img src="https://raw.githubusercontent.com/shaocongliu/MCB_in_VQA/master/graphs/train_average_loss.jpg" height="430" width="650">
- </div>
-
- <div class="image">
-  <img src="https://raw.githubusercontent.com/shaocongliu/MCB_in_VQA/master/graphs/val_accuracy.jpg" height="430" width="650">
- </div>
-
- <div class="image">
-  <img src="https://raw.githubusercontent.com/shaocongliu/MCB_in_VQA/master/graphs/val_loss.jpg" height="430" width="650">
- </div>
+<div align="center">
+  <table style="width=100%">
+    <tr>
+        <img src="https://raw.githubusercontent.com/shaocongliu/MCB_in_VQA/master/graphs/train_average_accuracy.jpg" align="middle" height="480" width="640">
+        <figcaption align="middle">training accuracy</figcaption>
+    </tr>
+  </table>
+</div>
+<div align="center">
+  <table style="width=100%">
+    <tr>
+        <img src="https://raw.githubusercontent.com/shaocongliu/MCB_in_VQA/master/graphs/train_average_loss.jpg" align="middle" height="480" width="640">
+        <figcaption align="middle">training loss</figcaption>
+    </tr>
+    </tr>
+  </table>
+</div>
+<div align="center">
+  <table style="width=100%">
+    <tr>
+        <img src="https://raw.githubusercontent.com/shaocongliu/MCB_in_VQA/master/graphs/val_accuracy.jpg" align="middle" height="480" width="640">
+        <figcaption align="middle">validation accuracy</figcaption>
+    </tr>
+    </tr>
+  </table>
+</div>
+<div align="center">
+  <table style="width=100%">
+    <tr>
+        <img src="https://raw.githubusercontent.com/shaocongliu/MCB_in_VQA/master/graphs/val_loss.jpg" align="middle" height="480" width="640">
+        <figcaption align="middle">validation loss</figcaption>
+    </tr>
+    </tr>
+  </table>
+</div>
 
 <p>
-  Even though our training loss keeps decreasing, our training/validating accuracy starts to lose major increase not long after 10,000~20,000 iterations. We checked again and again the correctness of our model by running mini epoches to see if our deep network was able to overfit. Our model passed every check by overfitting quickly within tens of iterations. Yet the validation results kept showing that there were mis-implementations in our model. <br /> <br />
-Therefore, we went back to check the original data source and our validation method. By running a validation batch on our 75,000 iteration models, we found that our model tends to predict “yes” for most questions, regardless of the question type. We started to wonder that was there a data skew in the original questions’ composition. And indeed, by researching into the answers’ distribution, we found that “yes” appears to be the most popular answer for major question types such us “does…?” and “is there…?” Consequently, our model tends to learn this pattern rather than the real logic behind reasoning around the question by “looking at” the image. With the prevailing majority of the “yes” answer, the original paper might have re-balanced the data during its training to focus on those questions without the “yes” answer.<br /> <br />
-The original paper <dt-cite key="2"></dt-cite> did not present a learning rate schedule, so the paper suggests the learning rate stays constant during the whole training process. The model thus might just chase each training batch to overfit that single batch, so it ends up not doing well. 
+  Even though our training loss kept decreasing, our training/validating accuracy started to lose major increase not long after 10,000~20,000 iterations. We checked again and again the correctness of our model by running mini epoches to see if our deep network was able to overfit. Our model passed every check by overfitting quickly within tens of iterations. Yet the validation results kept showing that there were mis-implementations in our model. <br /> <br />
+Therefore, we went back to check the original data source and our validation method. By running a validation batch on our 75,000 iteration models, we found that our model tended to predict “yes” for most questions, regardless of the question type. We started to wonder that was there a data skew in the original questions’ composition. And indeed, by researching into the answers’ distribution, we found that “yes” appears to be the most popular answer for major question types such us “does…?” and “is there…?” Consequently, our model tended to learn this pattern rather than the real logic behind reasoning around the question by “looking at” the image. With the prevailing majority of the “yes” answer, the original paper might have re-balanced the data during its training to focus on those questions without the “yes” answer.<br /> <br />
+The original paper <dt-cite key="2"></dt-cite> did not present a learning rate schedule, so the paper suggests the learning rate stays constant during the whole training process. The model thus might just chase each training batch to overfit that single batch, so it ended up not doing well. 
 </p>
 
 <h2>Tools</h2>
@@ -103,6 +126,15 @@ As discussed above in the result section, we believe our major problem results f
 </p>
 
 <h2>Team Contributions</h2>
+<p>
+Bosen Ding: implemented the neural network structures, debugged the networks, modified the data provider code from official Visual API and wrote the report. (25%)</p><p>
+Shaocong Liu: Implemented the training code, ran the code on AWS, debugged and wrote the slides, poster, and report. (25%)</p><p>
+Wenjing Kang: pre-processed images in Caffe, set up AWS environment, debugged, ran the code on AWS  and wrote the report. (25%)</p><p>
+Karen Lu:  attempted data extraction without VQA official API, attempted tenforflow resnet weight initialization. (25%)
+</p>
+
+<h2>Codes</h2>
+<p>Our codes were uploaded to github link: <a href="https://github.com/shaocongliu/MCB_in_VQA">MCB_in_VQA.</a></p>
 
 
 </dt-article>
