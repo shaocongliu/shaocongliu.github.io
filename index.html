@@ -50,7 +50,7 @@ When Glove was used, we combined the word-embedding vector and the corresponding
 </p>
 
 <div class="image">
-  <img src="https://raw.githubusercontent.com/shaocongliu/MCB_in_VQA/master/graphs/mcb1.png" height="180" width="650">
+  <img src="https://raw.githubusercontent.com/shaocongliu/MCB_in_VQA/master/plots/mcb1.png" height="180" width="650">
  </div>
 
 <p>
@@ -60,7 +60,7 @@ Our basic model uses the image and textual(without Glove) input as mentioned abo
 The original paper <dt-cite key="2"></dt-cite> did not implement the MCB themselves, so we just used a tensorflow MCB CUDA implementation <dt-cite key="4"></dt-cite> we found online. 
 </p>
 <div class="image">
-  <img src="https://raw.githubusercontent.com/shaocongliu/MCB_in_VQA/master/graphs/mcb2.png" height="230" width="700">
+  <img src="https://raw.githubusercontent.com/shaocongliu/MCB_in_VQA/master/plots/mcb2.png" height="230" width="700">
  </div>
 
 <p>
@@ -76,7 +76,7 @@ The results for baseline model, baseline mcb with glove, attention mcb, and our 
 <div align="center">
   <table style="width=100%">
     <tr>
-        <img src="https://raw.githubusercontent.com/shaocongliu/MCB_in_VQA/master/graphs/train_average_accuracy.jpg" align="middle" height="480" width="640">
+        <img src="https://raw.githubusercontent.com/shaocongliu/MCB_in_VQA/master/plots/train_average_accuracy.jpg" align="middle" height="480" width="640">
         <figcaption align="middle">training accuracy</figcaption>
     </tr>
   </table>
@@ -84,7 +84,7 @@ The results for baseline model, baseline mcb with glove, attention mcb, and our 
 <div align="center">
   <table style="width=100%">
     <tr>
-        <img src="https://raw.githubusercontent.com/shaocongliu/MCB_in_VQA/master/graphs/train_average_loss.jpg" align="middle" height="480" width="640">
+        <img src="https://raw.githubusercontent.com/shaocongliu/MCB_in_VQA/master/plots/train_average_loss.jpg" align="middle" height="480" width="640">
         <figcaption align="middle">training loss</figcaption>
     </tr>
     </tr>
@@ -93,7 +93,7 @@ The results for baseline model, baseline mcb with glove, attention mcb, and our 
 <div align="center">
   <table style="width=100%">
     <tr>
-        <img src="https://raw.githubusercontent.com/shaocongliu/MCB_in_VQA/master/graphs/val_accuracy.jpg" align="middle" height="480" width="640">
+        <img src="https://raw.githubusercontent.com/shaocongliu/MCB_in_VQA/master/plots/val_accuracy.jpg" align="middle" height="480" width="640">
         <figcaption align="middle">validation accuracy</figcaption>
     </tr>
     </tr>
@@ -102,7 +102,7 @@ The results for baseline model, baseline mcb with glove, attention mcb, and our 
 <div align="center">
   <table style="width=100%">
     <tr>
-        <img src="https://raw.githubusercontent.com/shaocongliu/MCB_in_VQA/master/graphs/val_loss.jpg" align="middle" height="480" width="640">
+        <img src="https://raw.githubusercontent.com/shaocongliu/MCB_in_VQA/master/plots/val_loss.jpg" align="middle" height="480" width="640">
         <figcaption align="middle">validation loss</figcaption>
     </tr>
     </tr>
@@ -130,7 +130,7 @@ As discussed above in the result section, we believe our major problem results f
 Bosen Ding: implemented the neural network structures, debugged the networks, modified the data provider code from official Visual API and wrote the report. (25%)</p><p>
 Shaocong Liu: Implemented the training code, ran the code on AWS, debugged and wrote the slides, poster, and report. (25%)</p><p>
 Wenjing Kang: pre-processed images in Caffe, set up AWS environment, debugged, ran the code on AWS  and wrote the report. (25%)</p><p>
-Karen Lu:  attempted data extraction without VQA official API, attempted tenforflow resnet weight initialization. (25%)
+Karen Lu:  Wrote data extraction without VQA official API, Tenforflow resnet weight initialization, implemented lstm code. (25%)
 </p>
 
 <h2>Codes</h2>
